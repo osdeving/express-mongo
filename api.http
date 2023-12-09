@@ -1,0 +1,24 @@
+GET http://localhost:3000/books
+
+###
+
+POST http://localhost:3000/books HTTP/1.1
+content-type: application/json
+
+{ 
+    "id": 3, 
+    "title": "Express and MongoDB"
+}
+
+###
+
+PUT http://localhost:3000/books/1 HTTP/1.1
+content-type: application/json
+
+{ 
+    "title": "Java Spring Boot"
+}
+
+###
+
+DELETE http://localhost:3000/books/1 HTTP/1.1
