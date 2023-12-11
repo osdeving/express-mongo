@@ -1,64 +1,24 @@
-import express from 'express';
-import connectToDatabase from './config/dbConnect.js';
+import express from "express";
+import connectToDatabase from "./config/dbConnect.js";
+import routes from "./routes/index.js";
 
+const connection = await connectToDatabase();
 
-const dbConnection = await connectToDatabase();
-
-
-dbConnection.on("error", (error) => {
-    console.error("Erro de conexao com o banco", error);
+connection.on("error", (erro) => {
+  console.error("erro de conexão", erro);
 });
 
-dbConnection.once("open", () => console.log("Conexão com o banco feita com sucesso!"));
+connection.once("open", () => {
+  console.log("Conexao com o banco feita com sucesso");
+})
 
 const app = express();
+routes(app);
 
-app.use(express.json());
-
-const books = [
-    {
-        id: 1,
-        title: 'O Senhor dos Anéis'
-    },
-    {
-        id: 2,
-        title: 'O Hobbit'
-    }
-];
-
-
-function getBook(id) {
-    return books.findIndex(book => book.id == id);
-}
-
-app.get('/books', (req, res) => {
-    res.status(200).json(books);
-});
-
-app.get('/books/:id', (req, res) => {
-    const index = getBook(req.params.id);
-
-    res.status(200).json(books[index]);
-});
-
-app.post("/books", (req, res) => {
-    books.push(req.body);
-    res.status(201).send('Livro criado com sucesso!');
-})
-
-app.put("/books/:id", (req, res) => {
-    const index = getBook(req.params.id);
-
-    books[index].title = req.body.title;
-    res.status(200).send(books);
-})
-
-app.delete("/books/:id", (req, res) => {
-    const index = getBook(req.params.id);
-
-    books.splice(index, 1);
-
-    res.status(200).send("Livro removido com sucesso!");
-})
+// app.delete("/books/:id", (req, res) => {
+//   const index = buscaLivro(req.params.id);
+//   livros.splice(index, 1);
+//   res.status(200).send("livro removido com sucesso");
+// });
 
 export default app;
